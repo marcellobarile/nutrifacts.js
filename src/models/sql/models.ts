@@ -1,4 +1,4 @@
-import { Model, Sequelize } from 'sequelize/types';
+import { Model, Sequelize } from 'sequelize';
 
 import FoodModel, { IModel as IFood, IModelSimplified as IFoodSimplified } from './food';
 import FoodNutrientModel, { IModel as IFoodNutrient } from './foodNutrient';
