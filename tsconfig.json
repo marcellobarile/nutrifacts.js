@@ -14,5 +14,5 @@
     "types": ["reflect-metadata", "jest"],
     "typeRoots": ["./types", "./node_modules/@types"],
     "include": ["src"],
-    "exclude": ["node_modules", "db", "src/__scripts__", "src/__tests__"]
+    "exclude": ["node_modules", "db"]
 }
