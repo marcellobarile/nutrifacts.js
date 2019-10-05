@@ -1,0 +1,5 @@
+- Improve the handling of cooking weights and measures (https://en.wikipedia.org/wiki/Cooking_weights_and_measures)
+- Check values for "unitMeasuresInGrams" (both IT and EN)
+- Move units to the DB instead of having JSON files
+- Support {int} {unit} {fraction} (e.g. 1 gram and 1/2)
+- When the unit is missing (e.g. 1 banana) find and use the average weight in grams of such ingredient

@@ -1,0 +1,142 @@
+{
+  "unitTypes": [
+    "liquido",
+    "farina",
+    "fecola di patate",
+    "zucchero",
+    "riso",
+    "sale fino",
+    "sale fine",
+    "sale da cucina",
+    "burro",
+    "polvere",
+    "bicarbonato di sodio"
+  ],
+  "defaulUnitType": "liquido",
+  "nominalUnits": {
+    "liters": [
+      "l",
+      "l.",
+      "lt",
+      "lt.",
+      "litro",
+      "litri"
+    ],
+    "milliliters": [
+      "ml",
+      "ml.",
+      "millilitro",
+      "millilitri"
+    ],
+    "milligrams": [
+      "mgr",
+      "mgr.",
+      "mg",
+      "mg.",
+      "milligrammo",
+      "milligrammi"
+    ],
+    "grams": [
+      "gr",
+      "gr.",
+      "g",
+      "g.",
+      "grammo",
+      "grammi"
+    ],
+    "kilograms": [
+      "kgr",
+      "kgr.",
+      "kg",
+      "kg.",
+      "kilogrammo",
+      "kilogrammi"
+    ]
+  },
+  "pluralsMap": {
+    "tazze": "tazza",
+    "bicchieri": "bicchiere",
+    "cucchiai": "cucchiaio",
+    "cucchiaini": "cucchiaino",
+    "pugni": "pugno"
+  },
+  "unitMeasuresInGrams": {
+    "tazza": {
+      "liquido": 250,
+      "farina": 140,
+      "polvere": 155,
+      "fecola di patate": 120,
+      "zucchero": 200,
+      "riso": 250
+    },
+    "bicchiere": {
+      "liquido": 200,
+      "farina": 120,
+      "polvere": 135,
+      "fecola di patate": 100,
+      "riso": 150,
+      "zucchero": 150
+    },
+    "cucchiaio": {
+      "liquido": 13,
+      "farina": 13,
+      "polvere": 13,
+      "fecola di patate": 13,
+      "riso": 13,
+      "sale fino": 13,
+      "sale fine": 13,
+      "sale da cucina": 13,
+      "zucchero": 13
+    },
+    "cucchiaino": {
+      "liquido": 4,
+      "farina": 4,
+      "polvere": 4,
+      "burro": 4,
+      "riso": 4,
+      "sale fino": 4,
+      "sale fine": 4,
+      "sale da cucina": 4,
+      "zucchero": 4,
+      "bicarbonato di sodio": 4,
+      "bicarbonato": 4
+    },
+    "pugno": {
+      "liquido": 10,
+      "farina": 20,
+      "polvere": 20,
+      "burro": 70,
+      "riso": 50,
+      "sale fino": 70,
+      "sale fine": 70,
+      "sale da cucina": 70,
+      "zucchero": 70,
+      "bicarbonato di sodio": 50,
+      "bicarbonato": 50
+    }
+  },
+  "wordNumbers": {
+    "coppia": 2,
+    "paio": 2,
+    "mezzo": 0.5,
+    "un terzo": 0.3,
+    "un quarto": 0.25,
+    "tre quarti": 0.75,
+    "due terzi": 0.6,
+    "un": 1,
+    "uno": 1,
+    "una": 1,
+    "due": 2,
+    "tre": 3,
+    "quattro": 4,
+    "cinque": 5,
+    "sei": 6,
+    "sette": 7,
+    "otto": 8,
+    "nove": 9,
+    "dieci": 10,
+    "undici": 11,
+    "dodici": 12,
+    "tredici": 13
+  }
+}

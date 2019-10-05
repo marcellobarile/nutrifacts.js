@@ -1,0 +1,55 @@
+{
+  "name": "nutrifacts.js",
+  "version": "1.0.0",
+  "description": "A Node.js library to calculate nutrition facts, smartly.",
+  "main": "lib/index.js",
+  "files": [
+    "lib/**/*",
+    "db/**/*"
+  ],
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "jest --config jestconfig.json",
+    "build": "tsc",
+    "build-fuzzy-db": "tsc src/__scripts__/build-fuzzy-db.ts && node src/__scripts__/build-fuzzy-db.js",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "author": "Marcello Barile <marcello.barile@gmail.com>",
+  "homepage": "https://github.com/marcellobarile/nutrifacts.js#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marcellobarile/nutrifacts.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/marcellobarile/nutrifacts.js/issues",
+    "email": "marcello.barile@gmail.com"
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/bluebird": "^3.5.27",
+    "@types/jest": "^24.0.18",
+    "@types/lodash": "^4.14.138",
+    "@types/node": "^12.7.5",
+    "@types/pegjs": "^0.10.1",
+    "@types/validator": "^10.11.3",
+    "jest": "^24.9.0",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.1.0",
+    "tslint": "^5.20.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "fuse.js": "^3.4.5",
+    "lodash": "^4.17.15",
+    "pegjs": "^0.10.0",
+    "sequelize": "^5.18.4",
+    "sqlite3": "^4.1.0"
+  }
+}
