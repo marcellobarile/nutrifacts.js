@@ -1,6 +1,6 @@
 {
   "name": "nutrifacts.js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A Node.js library to calculate nutrition facts, smartly.",
   "main": "lib/index.js",
   "files": [
