@@ -41,13 +41,13 @@ test('Get nutrients in recipe - simple string (NLP)', async () => {
 });
 
 test('Get nutrients in recipe - simple string w/ liter units (NLP)', async () => {
-  const recipe: IInputIngredient[] = [{ recipeStr: '2 lt di latte scremato' }];
+  const recipe: IInputIngredient[] = [{ recipeStr: '2 lt di latte scremato uht' }];
   const result: IRecipeResult = await lib.getNutrientsInRecipe(recipe);
   expect(result).not.toBeUndefined();
   expect(result).toHaveProperty('totals');
   expect(result).toHaveProperty('matches');
-  if (result && result.matches && result.matches['latte scremato'] && result.matches['latte scremato'][0]) {
-    expect(result.matches['latte scremato'][0]).toHaveProperty('id', '440');
+  if (result && result.matches && result.matches['latte scremato uht'] && result.matches['latte scremato uht'][0]) {
+    expect(result.matches['latte scremato uht'][0]).toHaveProperty('id', '471');
   } else {
     throw new Error('fail');
   }
