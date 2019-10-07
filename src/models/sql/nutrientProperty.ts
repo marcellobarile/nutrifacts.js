@@ -1,15 +1,16 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
+import { BuildOptions, Sequelize } from 'sequelize';
+import { DataType, Model } from 'sequelize-typescript';
 
 const modelName = 'nutrientProperty';
 const tableName = 'nutrients_property';
 const schema = {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  nutrient_id: DataTypes.INTEGER,
-  property_id: DataTypes.INTEGER,
+  nutrient_id: DataType.INTEGER,
+  property_id: DataType.INTEGER,
 };
 
 export interface IModel extends Model {

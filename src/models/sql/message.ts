@@ -1,14 +1,15 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
+import { BuildOptions, Sequelize } from 'sequelize';
+import { DataType, Model } from 'sequelize-typescript';
 
 const modelName = 'message';
 const tableName = 'messages';
 const schema = {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  text: DataTypes.STRING,
+  text: DataType.STRING,
 };
 
 export interface IModel extends Model {

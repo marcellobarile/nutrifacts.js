@@ -1,16 +1,18 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
+import { BuildOptions, Sequelize } from 'sequelize';
+import { DataType, Model } from 'sequelize-typescript';
+
 import { IProperty } from './models';
 
 const modelName = 'nutrient';
 const tableName = 'nutrients';
 const schema = {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  name: DataTypes.STRING,
-  unit: DataTypes.STRING,
+  name: DataType.STRING,
+  unit: DataType.STRING,
 };
 
 export interface IModel extends Model {

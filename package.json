@@ -1,16 +1,15 @@
 {
-  "name": "nutrifacts.js",
-  "version": "1.0.2",
-  "description": "A Node.js library to calculate nutrition facts, smartly.",
-  "main": "lib/index.js",
+  "name": "nutrifacts",
+  "version": "1.0.0",
+  "description": "A library to calculate nutrition facts, smartly. No third party services or remote DBs involved.",
+  "main": "lib/src/index.js",
   "files": [
-    "lib/**/*",
-    "db/**/*"
+    "lib/**/*"
   ],
-  "types": "lib/index.d.ts",
+  "types": "lib/src/index.d.ts",
   "scripts": {
     "test": "jest --config jestconfig.json",
-    "build": "tsc",
+    "build": "tsc && npm run copydb",
     "build-fuzzy-db": "tsc src/__scripts__/build-fuzzy-db.ts && node src/__scripts__/build-fuzzy-db.js",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
@@ -18,7 +17,8 @@
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "copydb": "copyfiles -u 1 db/nlp-rules/** lib/db && copyfiles -u 1 db/*.sqlite lib/db"
   },
   "author": "Marcello Barile <marcello.barile@gmail.com>",
   "homepage": "https://github.com/marcellobarile/nutrifacts.js#readme",
@@ -30,6 +30,7 @@
     "url": "https://github.com/marcellobarile/nutrifacts.js/issues",
     "email": "marcello.barile@gmail.com"
   },
+  "keywords": ["food","nutrition","nutrition facts","health","cooking"],
   "license": "UNLICENSED",
   "devDependencies": {
     "@types/bluebird": "^3.5.27",
@@ -38,6 +39,7 @@
     "@types/node": "^12.7.5",
     "@types/pegjs": "^0.10.1",
     "@types/validator": "^10.11.3",
+    "copyfiles": "^2.1.1",
     "jest": "^24.9.0",
     "prettier": "^1.18.2",
     "ts-jest": "^24.1.0",
@@ -49,7 +51,9 @@
     "fuse.js": "^3.4.5",
     "lodash": "^4.17.15",
     "pegjs": "^0.10.0",
+    "reflect-metadata": "^0.1.13",
     "sequelize": "^5.18.4",
+    "sequelize-typescript": "^1.0.0",
     "sqlite3": "^4.1.0"
   }
 }

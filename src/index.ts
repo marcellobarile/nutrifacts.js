@@ -1,5 +1,6 @@
 import fs from 'fs';
 import _ from 'lodash';
+import * as path from 'path';
 import peg from 'pegjs';
 
 import ConversionsUtils from './helpers/conversions';
@@ -33,7 +34,7 @@ export interface IInputIngredient {
 export default class NutrifactsJs {
   private db: DbApi = new DbApi();
   private nlpParser: peg.Parser = peg.generate(
-    fs.readFileSync(`./db/nlp-rules/rules_${LanguageUtils.getLang()}.pegjs`, { encoding: 'utf8' }),
+    fs.readFileSync(path.join(__dirname, `/../db/nlp-rules/rules_${LanguageUtils.getLang()}.pegjs`), { encoding: 'utf8' }),
   );
 
   /**

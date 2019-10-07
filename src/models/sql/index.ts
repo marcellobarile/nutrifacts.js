@@ -11,7 +11,7 @@ export default class DbModels {
   constructor(sync: boolean = false) {
     this.sequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: path.join(process.cwd(), `db/data_${LanguageUtils.getLang()}.sqlite`),
+      storage: path.join(__dirname, `/../../../db/data_${LanguageUtils.getLang()}.sqlite`),
       logging: false,
     });
 

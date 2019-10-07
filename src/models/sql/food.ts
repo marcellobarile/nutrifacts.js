@@ -1,4 +1,6 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
+import { BuildOptions, Sequelize } from 'sequelize';
+import { DataType, Model } from 'sequelize-typescript';
+
 import { INutrient } from './models';
 
 const modelName = 'food';
@@ -7,10 +9,10 @@ const schema = {
   id: {
     autoIncrement: true,
     primaryKey: true,
-    type: DataTypes.INTEGER,
+    type: DataType.INTEGER,
   },
-  name: DataTypes.STRING,
-  ref_id: DataTypes.INTEGER,
+  name: DataType.STRING,
+  ref_id: DataType.INTEGER,
 };
 
 export interface IModel extends Model {
