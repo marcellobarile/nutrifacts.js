@@ -3,3 +3,4 @@
 - Move units to the DB instead of having JSON files
 - Support {int} {unit} {fraction} (e.g. 1 gram and 1/2)
 - When the unit is missing (e.g. 1 banana) find and use the average weight in grams of such ingredient
+- How to deal with missing foods in the DB? The optimal solution would be to derive the most generic available food (e.g. "guanciale" => "pork fat meat")

@@ -10,7 +10,7 @@ import DbApi from './services/db';
 
 export interface IRecipeResult {
   totals: { [label: string]: { value: number; unit: string } };
-  unknown: { [label: string]: { ingredient: IInputIngredient; parsed?: string[] } };
+  unknown: { [label: string]: { ingredient: IInputIngredient; parsed?: string[]; reasons?: UNKNOWN_REASONS[] } };
   matches: { [label: string]: IFood[] };
 }
 
@@ -25,6 +25,13 @@ export enum LANGUAGES {
   IT = 'IT',
 }
 
+export enum UNKNOWN_REASONS {
+  PARSING = 'mismatch during parsing',
+  PARSING_AMOUNT = 'unknown amount',
+  PARSING_UNIT = 'unknown unit',
+  NO_ENTRY = 'unavailable food',
+}
+
 export interface IInputIngredient {
   recipeStr?: string;
   label?: string;
@@ -34,7 +41,9 @@ export interface IInputIngredient {
 export default class NutrifactsJs {
   private db: DbApi = new DbApi();
   private nlpParser: peg.Parser = peg.generate(
-    fs.readFileSync(path.join(__dirname, `/../db/nlp-rules/rules_${LanguageUtils.getLang()}.pegjs`), { encoding: 'utf8' }),
+    fs.readFileSync(path.join(__dirname, `/../db/nlp-rules/rules_${LanguageUtils.getLang()}.pegjs`), {
+      encoding: 'utf8',
+    }),
   );
 
   /**
@@ -75,12 +84,24 @@ export default class NutrifactsJs {
             typeof parts.ingredient === 'undefined' ||
             typeof parts.unit === 'undefined'
           ) {
-            // TODO: When the unit is not specified it means that a whole ingredient has been provided (1 banana etc..).
-            // In this case the algorithm should get the average grams of the given ingredient
-            output.unknown[ingredient.label || ingredient.recipeStr] = {
+            /*
+              TODO: When the unit is not specified it means that a whole ingredient has been provided (1 banana etc..).
+              In this case the algorithm should get the average grams of the given ingredient.
+            */
+            const unknownReasons = [UNKNOWN_REASONS.PARSING];
+            if (!parts.amount) {
+              unknownReasons.push(UNKNOWN_REASONS.PARSING_AMOUNT);
+            }
+            if (!parts.unit) {
+              unknownReasons.push(UNKNOWN_REASONS.PARSING_UNIT);
+            }
+
+            output.unknown[ingredient.recipeStr] = {
               ingredient,
               parsed: parts,
+              reasons:unknownReasons,
             };
+
             maybeResolve();
             return;
           } else {
@@ -111,8 +132,10 @@ export default class NutrifactsJs {
           .getFoodsByQuery(label, true, true)
           .then((foods: IFood[]) => {
             if (foods.length === 0) {
+              // TODO: How to try to match at least the category of food? (i.e. "guanciale" => pork meat fat, "spaghetti" => pasta)
               output.unknown[label] = {
                 ingredient,
+                reasons: [UNKNOWN_REASONS.NO_ENTRY],
               };
 
               maybeResolve();

@@ -133,6 +133,10 @@ export default class LanguageUtils {
     needle: string,
     returnOnlyId: boolean = false,
   ): IFood[] | string[] {
+    if (foods.length === 0) {
+      return [];
+    }
+
     needle = this.removeStopWords(needle);
 
     const inputWords = needle.split(' ');

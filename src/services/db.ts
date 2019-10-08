@@ -232,7 +232,7 @@ export default class DbApi {
       const matches: IFoodSimplified[] = this.fuzzyFoods.search(query);
       const bestMatches: string[] = LanguageUtils.getBestMatchingFood(matches, query, true) as string[];
 
-      if (!bestMatches || bestMatches.length === 0) {
+      if (bestMatches.length === 0) {
         resolve([]);
         return;
       }

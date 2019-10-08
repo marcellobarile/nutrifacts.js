@@ -121,3 +121,29 @@ test('Get nutrients in recipe - simple string w/ fraction symbol (NLP)', async (
     throw new Error('fail');
   }
 });
+
+test('Get nutrients in recipe - list of ingredients (NLP) w/ unknown foods', async() => {
+  const ingredients: IInputIngredient[] = [
+    {
+      recipeStr: '320g spaghetti',
+    },
+    {
+      recipeStr: '6 tuorli d\'uovo',
+    },
+    {
+      recipeStr: 'q.b. sale',
+    },
+    {
+      recipeStr: '150g guanciale',
+    },
+    {
+      recipeStr: '50g pecorino romano',
+    },
+    {
+      recipeStr: 'q.b. pepe nero',
+    }
+  ];
+  const result = await lib.getNutrientsInRecipe(ingredients);
+  expect(result).not.toBeUndefined();
+  expect(result.unknown).not.toBeUndefined();
+});
