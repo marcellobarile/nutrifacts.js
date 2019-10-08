@@ -1,6 +1,6 @@
 {
   "name": "nutrifacts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A library to calculate nutrition facts, smartly. No third party services or remote DBs involved.",
   "main": "lib/src/index.js",
   "files": [
@@ -30,7 +30,13 @@
     "url": "https://github.com/marcellobarile/nutrifacts.js/issues",
     "email": "marcello.barile@gmail.com"
   },
-  "keywords": ["food","nutrition","nutrition facts","health","cooking"],
+  "keywords": [
+    "food",
+    "nutrition",
+    "nutrition facts",
+    "health",
+    "cooking"
+  ],
   "license": "UNLICENSED",
   "devDependencies": {
     "@types/bluebird": "^3.5.27",

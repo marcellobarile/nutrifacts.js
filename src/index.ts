@@ -99,7 +99,7 @@ export default class NutrifactsJs {
             output.unknown[ingredient.recipeStr] = {
               ingredient,
               parsed: parts,
-              reasons:unknownReasons,
+              reasons: unknownReasons,
             };
 
             maybeResolve();
