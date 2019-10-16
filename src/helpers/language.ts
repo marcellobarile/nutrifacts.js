@@ -111,7 +111,7 @@ export default class LanguageUtils {
    * @param inputWords List A.
    * @param foodWords List B.
    */
-  public static countWordsOccurrence(inputWords: string[], foodWords: string[]): {count: number; totLevDist: number} {
+  public static countWordsOccurrence(inputWords: string[], foodWords: string[]): { count: number; totLevDist: number } {
     let occurrence = 0;
     let distance = 0;
     _.each(_.uniq(foodWords), (foodWord: string) => {
@@ -175,23 +175,22 @@ export default class LanguageUtils {
       food.stats = {
         occurrence: occurrence.count,
         distance: occurrence.totLevDist,
-        confidence: 
+        confidence:
           // the higher the occurrences the higher the coefficient.
-          (occurrence.count * 0.25) * inputWords.length
+          occurrence.count * 0.25 * inputWords.length -
           // the more similar the words the higher the coefficient.
-          - (occurrence.totLevDist / foodWords.length)
-        ,
+          occurrence.totLevDist / foodWords.length,
       };
     }
 
     const maxConfidence = _.maxBy(foods, 'stats.confidence')!.stats.confidence || 0;
     const minConfidence = _.minBy(foods, 'stats.confidence')!.stats.confidence || 0;
-    
+
     _.each(foods, (food: IFood | IFoodSimplified) => {
       if (typeof food.stats !== 'undefined' && typeof food.stats.confidence !== 'undefined') {
-        food.stats.confidence = (food.stats.confidence - minConfidence) / (maxConfidence - minConfidence)
+        food.stats.confidence = (food.stats.confidence - minConfidence) / (maxConfidence - minConfidence);
       }
-    })
+    });
 
     if (perfectMatch) {
       return returnOnlyId ? [perfectMatch.id] : [perfectMatch];
