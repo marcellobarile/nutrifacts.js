@@ -3,3 +3,5 @@ coverage
 tsconfig.json
 tslint.json
 .prettierrc
+TODOs.md
+CONTRIBUTING.mds
