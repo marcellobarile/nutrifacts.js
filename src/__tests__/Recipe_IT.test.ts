@@ -21,20 +21,20 @@ test('Get nutrients in recipe (strict)', async () => {
   expect(result).toHaveProperty('totals');
   expect(result).toHaveProperty('matches');
   if (result && result.matches && result.matches['zucchero'] && result.matches['zucchero'][0]) {
-    expect(result.matches['zucchero'][0]).toHaveProperty('id', '974');
+    expect(result.matches['zucchero'][0]).toHaveProperty('id', '975');
   } else {
     throw new Error('fail');
   }
 });
 
 test('Get nutrients in recipe - simple string (NLP)', async () => {
-  const recipe: IInputIngredient[] = [{ recipeStr: '20gr di zucchero semolato' }];
+  const recipe: IInputIngredient[] = [{ recipeStr: '20gr di zucchero di canna' }];
   const result: IRecipeResult = await lib.getNutrientsInRecipe(recipe);
   expect(result).not.toBeUndefined();
   expect(result).toHaveProperty('totals');
   expect(result).toHaveProperty('matches');
-  if (result && result.matches && result.matches['zucchero semolato'] && result.matches['zucchero semolato'][0]) {
-    expect(result.matches['zucchero semolato'][0]).toHaveProperty('id', '974');
+  if (result && result.matches && result.matches['zucchero di canna'] && result.matches['zucchero di canna'][0]) {
+    expect(result.matches['zucchero di canna'][0]).toHaveProperty('id', '974');
   } else {
     throw new Error('fail');
   }
@@ -47,7 +47,7 @@ test('Get nutrients in recipe - simple string w/ liter units (NLP)', async () =>
   expect(result).toHaveProperty('totals');
   expect(result).toHaveProperty('matches');
   if (result && result.matches && result.matches['latte scremato uht'] && result.matches['latte scremato uht'][0]) {
-    expect(result.matches['latte scremato uht'][0]).toHaveProperty('id', '471');
+    expect(result.matches['latte scremato uht'][0]).toHaveProperty('id', '444');
   } else {
     throw new Error('fail');
   }

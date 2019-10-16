@@ -111,14 +111,22 @@ export default class LanguageUtils {
    * @param inputWords List A.
    * @param foodWords List B.
    */
-  public static countWordsOccurrence(inputWords: string[], foodWords: string[]): number {
+  public static countWordsOccurrence(inputWords: string[], foodWords: string[]): {count: number; totLevDist: number} {
     let occurrence = 0;
-    _.each(foodWords, (word: string) => {
-      if (inputWords.indexOf(word) > -1) {
-        occurrence++;
-      }
+    let distance = 0;
+    _.each(_.uniq(foodWords), (foodWord: string) => {
+      _.each(inputWords, (inputWord: string) => {
+        const wordsDistance = this.strDistance(inputWord, foodWord);
+        distance += wordsDistance;
+        if (wordsDistance <= 1) {
+          occurrence++;
+        }
+      });
     });
-    return occurrence;
+    return {
+      count: occurrence,
+      totLevDist: distance,
+    };
   }
 
   /**
@@ -139,10 +147,8 @@ export default class LanguageUtils {
 
     needle = this.removeStopWords(needle);
 
-    const inputWords = needle.split(' ');
+    const inputWords = needle.replace(',', '').split(' ');
 
-    let bestMatch: IFood | IFoodSimplified | string = returnOnlyId ? foods[0].id : foods[0];
-    let bestOccurrence = 0;
     let perfectMatch: any;
 
     for (const food of foods) {
@@ -164,73 +170,35 @@ export default class LanguageUtils {
         break;
       }
 
+      const occurrence = this.countWordsOccurrence(inputWords, foodWords);
+
       food.stats = {
-        occurrence: this.countWordsOccurrence(inputWords, foodWords),
-        distance: 0,
-        confidence: 0,
+        occurrence: occurrence.count,
+        distance: occurrence.totLevDist,
+        confidence: 
+          // the higher the occurrences the higher the coefficient.
+          (occurrence.count * 0.25) * inputWords.length
+          // the more similar the words the higher the coefficient.
+          - (occurrence.totLevDist / foodWords.length)
+        ,
       };
-
-      const localDistances: number[] = [];
-      let coeff = 0;
-
-      _.each(inputWords, (inputWord: string) => {
-        const levenDist = this.strDistance(foodWords[0], inputWord);
-        localDistances.push(levenDist);
-      });
-
-      _.each(localDistances, (distance: number, index: number) => {
-        coeff = (food.stats.distance + distance / localDistances.length + index * 0.1) * 0.1;
-
-        if (distance === 0) {
-          coeff = -0.15;
-        }
-
-        // Let's promote any exact matching word in the input food
-        food.stats.distance += coeff;
-      });
-
-      const confidence = parseFloat(String((0.5 - coeff) / 0.5));
-      food.stats.confidence = coeff <= 0.5 ? confidence : 0;
-
-      const deltaCoeff = 0.05 * food.stats.occurrence;
-      food.stats.confidence += deltaCoeff;
-
-      if (food.stats.confidence < 0) {
-        food.stats.confidence = 0;
-      } else if (food.stats.confidence > 1) {
-        food.stats.confidence = 1;
-      }
-
-      if (food.stats.distance < 0) {
-        food.stats.distance = 0;
-      } else if (food.stats.distance > 1) {
-        food.stats.distance = 1;
-      }
-
-      /*
-      candidates.push({
-          name: food.name,
-          stats: food.stats
-      })
-      */
     }
+
+    const maxConfidence = _.maxBy(foods, 'stats.confidence')!.stats.confidence || 0;
+    const minConfidence = _.minBy(foods, 'stats.confidence')!.stats.confidence || 0;
+    
+    _.each(foods, (food: IFood | IFoodSimplified) => {
+      if (typeof food.stats !== 'undefined' && typeof food.stats.confidence !== 'undefined') {
+        food.stats.confidence = (food.stats.confidence - minConfidence) / (maxConfidence - minConfidence)
+      }
+    })
 
     if (perfectMatch) {
       return returnOnlyId ? [perfectMatch.id] : [perfectMatch];
     }
 
-    bestOccurrence = 0;
-    let bestDistance = 100;
-    _.each(foods, (food: IFood | IFoodSimplified) => {
-      if (food.stats.occurrence >= bestOccurrence && food.stats.distance <= bestDistance) {
-        bestOccurrence = food.stats.occurrence;
-        bestDistance = food.stats.distance;
-        bestMatch = returnOnlyId ? food.id : food;
-      }
-    });
+    foods = _.orderBy(foods, ['stats.occurrence', 'stats.confidence'], ['desc', 'desc']);
 
-    // bestMatch.candidates = candidates
-
-    return returnOnlyId ? [bestMatch as string] : [bestMatch as IFood];
+    return returnOnlyId ? [foods[0].id] : [foods[0] as IFood];
   }
 }

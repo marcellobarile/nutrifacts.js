@@ -21,7 +21,7 @@ test('Get nutrients in recipe (strict)', async () => {
   expect(result).toHaveProperty('totals');
   expect(result).toHaveProperty('matches');
   if (result && result.matches && result.matches['sugar'] && result.matches['sugar'][0]) {
-    expect(result.matches['sugar'][0]).toHaveProperty('id', '975');
+    expect(result.matches['sugar'][0]).toHaveProperty('id', '974');
   } else {
     throw new Error('fail');
   }
@@ -34,7 +34,7 @@ test('Get nutrients in recipe - simple string (NLP)', async () => {
   expect(result).toHaveProperty('totals');
   expect(result).toHaveProperty('matches');
   if (result && result.matches && result.matches['sugar'] && result.matches['sugar'][0]) {
-    expect(result.matches['sugar'][0]).toHaveProperty('id', '975');
+    expect(result.matches['sugar'][0]).toHaveProperty('id', '974');
   } else {
     throw new Error('fail');
   }
