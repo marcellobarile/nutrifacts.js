@@ -33,7 +33,7 @@ test('Get food by query w/o nutrients (NLP)', async () => {
 });
 
 test('Get food by query w/ nutrients (NLP)', async () => {
-  const food: IFood | undefined = await lib.getFoodByQuery('tomato sauce', true);
+  const food: IFood | undefined = await lib.getFoodByQuery('tomato preserve', true);
   expect(food).not.toBeUndefined();
   expect(food).toHaveProperty('name', 'tomato, preserve (dry substance 30%)');
   expect(food).toHaveProperty('nutrients');
