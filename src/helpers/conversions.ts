@@ -4,6 +4,7 @@ import { LANGUAGES } from '../';
 import UnitsEn from '../../db/units_EN.json';
 import UnitsIt from '../../db/units_IT.json';
 import { IFood, INutrient } from '../models/sql/models';
+import { IReccomendetion as IRecommendation } from '../models/sql/nutrient';
 import LanguageUtils from './language';
 
 export default class ConversionsUtils {
@@ -153,14 +154,9 @@ export default class ConversionsUtils {
       }
 
       if (nutrient.unit !== '%' && foodQuantity > 0) {
-        let refQuantity = this.refQuantityGr;
-        if (nutrient.unit === 'µg') {
-          refQuantity /= 1000000;
-        } else if (nutrient.unit === 'mg') {
-          refQuantity /= 1000;
-        }
-        const singleUnitValue = nutrient.quantity / this.refQuantityGr;
+        const singleUnitValue = this.scaleToGrams(nutrient.quantity, nutrient.unit);
         nutrient.quantity = singleUnitValue * foodQuantity;
+        nutrient.unit = 'g';
       }
     });
   }
@@ -170,5 +166,51 @@ export default class ConversionsUtils {
    */
   public static get defaultQuantityMeasure(): string {
     return this.getUnits().nominalUnits.grams[0];
+  }
+
+  /**
+   *  Returns a "recommendation" object; it also in charge of computing
+   * a risk ratio for the given nutrient, based on its amount.
+   */
+  public static getRecommendations(nutrient: INutrient, data: any = {}): IRecommendation {
+    return {
+      daily_amount: {
+        male: data.amount_m,
+        female: data.amount_f,
+      },
+      ear: data.ear,
+      highest_rda_ai: data.highest_rda_ai,
+      ul: data.ul,
+      unit: data.unit,
+    };
+  }
+
+  /**
+   * Computes and hydrates a healthy coeff for the given nutrient.
+   * @param nutrient The nutrient class to hydrate
+   */
+  public static computeHealtyCoeff(nutrient: INutrient): void {
+    nutrient.recommendation.health_risk_ratio = nutrient.recommendation.daily_amount.male
+      ? // TODO: Shall we compute a meaning average for covering also females?
+        +nutrient.quantity / +nutrient.recommendation.daily_amount.male
+      : // TODO: Shall we add more factors to the ratio?
+      !isNaN(nutrient.recommendation.highest_rda_ai)
+      ? +nutrient.quantity / this.scaleToGrams(+nutrient.recommendation.highest_rda_ai, nutrient.recommendation.unit)
+      : 0;
+  }
+
+  /**
+   * Converts a given value with a given unit to grams.
+   * @param value The value to convert
+   * @param unit  The unit of the value to convert
+   */
+  private static scaleToGrams(value: number, unit: string): number {
+    let refQuantity = this.refQuantityGr;
+    if (unit === 'µg') {
+      refQuantity /= 1000000;
+    } else if (unit === 'mg') {
+      refQuantity /= 1000;
+    }
+    return value / refQuantity /* this.refQuantityGr */;
   }
 }

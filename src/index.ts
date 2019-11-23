@@ -12,6 +12,7 @@ export interface IRecipeResult {
   totals: { [label: string]: { value: number; unit: string } };
   unknown: { [label: string]: { ingredient: IInputIngredient; parsed?: string[]; reasons?: UNKNOWN_REASONS[] } };
   matches: { [label: string]: IFood[] };
+  sum_health_ratio: number;
 }
 
 export enum LOGIC_OPERATOR {
@@ -55,6 +56,7 @@ export default class NutrifactsJs {
       totals: {},
       unknown: {},
       matches: {},
+      sum_health_ratio: 0,
     };
 
     return new Promise((resolve, reject) => {
@@ -99,7 +101,7 @@ export default class NutrifactsJs {
             output.unknown[ingredient.recipeStr] = {
               ingredient,
               parsed: parts,
-              reasons:unknownReasons,
+              reasons: unknownReasons,
             };
 
             maybeResolve();
@@ -153,6 +155,11 @@ export default class NutrifactsJs {
                   if (nutrient.unit === '%' || nutrient.quantity <= 0) {
                     return;
                   }
+
+                  ConversionsUtils.computeHealtyCoeff(nutrient);
+                  output.sum_health_ratio += nutrient.recommendation
+                    ? nutrient.recommendation.health_risk_ratio || 0
+                    : 0;
 
                   if (typeof output.totals[nutrient.name] === 'undefined') {
                     output.totals[nutrient.name] = { value: 0, unit: nutrient.unit };
