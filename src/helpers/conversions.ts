@@ -154,9 +154,7 @@ export default class ConversionsUtils {
       }
 
       if (nutrient.unit !== '%' && foodQuantity > 0) {
-        const singleUnitValue = this.scaleToGrams(nutrient.quantity, nutrient.unit);
-        nutrient.quantity = singleUnitValue * foodQuantity;
-        nutrient.unit = 'g';
+        nutrient.quantity = this.scaleQuantity(nutrient.quantity, nutrient.unit, foodQuantity);
       }
     });
   }
@@ -192,25 +190,33 @@ export default class ConversionsUtils {
   public static computeHealtyCoeff(nutrient: INutrient): void {
     nutrient.recommendation.health_risk_ratio = nutrient.recommendation.daily_amount.male
       ? // TODO: Shall we compute a meaning average for covering also females?
-        +nutrient.quantity / +nutrient.recommendation.daily_amount.male
-      : // TODO: Shall we add more factors to the ratio?
-      !isNaN(nutrient.recommendation.highest_rda_ai)
-      ? +nutrient.quantity / this.scaleToGrams(+nutrient.recommendation.highest_rda_ai, nutrient.recommendation.unit)
+        this.getRiskRatio(+nutrient.quantity, +nutrient.recommendation.daily_amount.male)
+      : !isNaN(nutrient.recommendation.highest_rda_ai)
+      ? this.getRiskRatio(+nutrient.quantity, +nutrient.recommendation.highest_rda_ai)
       : 0;
   }
 
   /**
-   * Converts a given value with a given unit to grams.
-   * @param value The value to convert
-   * @param unit  The unit of the value to convert
+   * Scales a given value within a given unit.
+   * @param singleUnitValue The single unit value
+   * @param unit  The unit of the value
+   * @param foodQuantityValue The quantity of food
    */
-  private static scaleToGrams(value: number, unit: string): number {
-    let refQuantity = this.refQuantityGr;
-    if (unit === 'µg') {
-      refQuantity /= 1000000;
-    } else if (unit === 'mg') {
-      refQuantity /= 1000;
-    }
-    return value / refQuantity /* this.refQuantityGr */;
+  private static scaleQuantity(singleUnitValue: number, unit: string, foodQuantityValue: number): number {
+    const valueInOneGram = singleUnitValue / this.refQuantityGr;
+    return valueInOneGram * foodQuantityValue;
+  }
+
+  /**
+   * Calculates the risk ratio.
+   * TODO: Shall we add more factors to the ratio?
+   * @param a The first factor
+   * @param b The second factor (this might be less than 0 for certain substances, where the consumption is "the less the better")
+   */
+  private static getRiskRatio(a: number, b: number): number {
+    return b < 0
+    // TODO: How to cope with negative factors were the rule for the intake is "the less the better"
+    ? b*-1
+    : a / b;
   }
 }

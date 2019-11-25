@@ -149,7 +149,7 @@ export default class LanguageUtils {
 
     const inputWords = needle.replace(',', '').split(' ');
 
-    let perfectMatch: any;
+    let perfectMatch: IFood | IFoodSimplified | undefined;
 
     for (const food of foods) {
       if (perfectMatch) {
@@ -184,21 +184,23 @@ export default class LanguageUtils {
       };
     }
 
-    const maxConfidence = _.maxBy(foods, 'stats.confidence')!.stats.confidence || 0;
-    const minConfidence = _.minBy(foods, 'stats.confidence')!.stats.confidence || 0;
-    
-    _.each(foods, (food: IFood | IFoodSimplified) => {
-      if (typeof food.stats !== 'undefined' && typeof food.stats.confidence !== 'undefined') {
-        food.stats.confidence = (food.stats.confidence - minConfidence) / (maxConfidence - minConfidence)
-      }
-    })
+    if (!perfectMatch) {
+      const maxByFood = _.maxBy(foods, 'stats.confidence');
+      const minByFood = _.minBy(foods, 'stats.confidence');
 
-    if (perfectMatch) {
-      return returnOnlyId ? [perfectMatch.id] : [perfectMatch];
+      const maxConfidence = maxByFood && maxByFood.stats.confidence || 0;
+      const minConfidence = minByFood && minByFood.stats.confidence || 0;
+      
+      _.each(foods, (food: IFood | IFoodSimplified) => {
+        if (typeof food !== 'undefined' && typeof food.stats !== 'undefined' && typeof food.stats.confidence !== 'undefined') {
+          food.stats.confidence = (food.stats.confidence - minConfidence) / (maxConfidence - minConfidence)
+        }
+      });
+
+      foods = _.orderBy(foods, ['stats.occurrence', 'stats.confidence'], ['desc', 'desc']);
+      return returnOnlyId ? [foods[0].id] : [foods[0] as IFood];
+    } else {
+      return returnOnlyId ? [perfectMatch.id] : [perfectMatch as IFood];
     }
-
-    foods = _.orderBy(foods, ['stats.occurrence', 'stats.confidence'], ['desc', 'desc']);
-
-    return returnOnlyId ? [foods[0].id] : [foods[0] as IFood];
   }
 }

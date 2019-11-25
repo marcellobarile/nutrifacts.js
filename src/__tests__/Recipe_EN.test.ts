@@ -51,7 +51,7 @@ test('Checks sum health ratio with (extreme) unhealthy recipe (strict)', async (
   expect(result).toHaveProperty('totals');
   expect(result).toHaveProperty('matches');
   if (result && result.matches) {
-    expect(result.sum_health_ratio).toBeGreaterThanOrEqual(1000);
+    expect(result.sum_health_ratio).toBeGreaterThanOrEqual(50);
   } else {
     throw new Error('fail');
   }
