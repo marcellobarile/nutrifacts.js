@@ -1,4 +1,5 @@
 - Improve the handling of cooking weights and measures (https://en.wikipedia.org/wiki/Cooking_weights_and_measures)
+- There are common foods that are often misleaded. (eggs = bottarga mullet roe eggs, salt = salt cod)
 - Check values for "unitMeasuresInGrams" (both IT and EN)
 - Move units to the DB instead of having JSON files
 - Support {int} {unit} {fraction} (e.g. 1 gram and 1/2)
