@@ -27,6 +27,36 @@ test('Get nutrients in recipe (strict)', async () => {
   }
 });
 
+test('Checks sum health ratio with unhealthy nutrient (strict)', async () => {
+  const recipe: IInputIngredient[] = [{ label: 'sugar', quantity: 1000 }];
+  const result: IRecipeResult = await lib.getNutrientsInRecipe(recipe);
+  expect(result).not.toBeUndefined();
+  expect(result).toHaveProperty('totals');
+  expect(result).toHaveProperty('matches');
+  if (result && result.matches) {
+    expect(result.sum_health_ratio).toBeGreaterThanOrEqual(1);
+  } else {
+    throw new Error('fail');
+  }
+});
+
+test('Checks sum health ratio with (extreme) unhealthy recipe (strict)', async () => {
+  const recipe: IInputIngredient[] = [
+    { label: 'meat', quantity: 500 },
+    { label: 'mozzarella', quantity: 600 },
+    { label: 'pasta', quantity: 320 },
+  ];
+  const result: IRecipeResult = await lib.getNutrientsInRecipe(recipe);
+  expect(result).not.toBeUndefined();
+  expect(result).toHaveProperty('totals');
+  expect(result).toHaveProperty('matches');
+  if (result && result.matches) {
+    expect(result.sum_health_ratio).toBeGreaterThanOrEqual(50);
+  } else {
+    throw new Error('fail');
+  }
+});
+
 test('Get nutrients in recipe - simple string (NLP)', async () => {
   const recipe: IInputIngredient[] = [{ recipeStr: '20gr of sugar' }];
   const result: IRecipeResult = await lib.getNutrientsInRecipe(recipe);

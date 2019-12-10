@@ -4,6 +4,7 @@ import { LANGUAGES } from '../';
 import UnitsEn from '../../db/units_EN.json';
 import UnitsIt from '../../db/units_IT.json';
 import { IFood, INutrient } from '../models/sql/models';
+import { IReccomendetion as IRecommendation } from '../models/sql/nutrient';
 import LanguageUtils from './language';
 
 export default class ConversionsUtils {
@@ -153,14 +154,7 @@ export default class ConversionsUtils {
       }
 
       if (nutrient.unit !== '%' && foodQuantity > 0) {
-        let refQuantity = this.refQuantityGr;
-        if (nutrient.unit === 'µg') {
-          refQuantity /= 1000000;
-        } else if (nutrient.unit === 'mg') {
-          refQuantity /= 1000;
-        }
-        const singleUnitValue = nutrient.quantity / this.refQuantityGr;
-        nutrient.quantity = singleUnitValue * foodQuantity;
+        nutrient.quantity = this.scaleQuantity(nutrient.quantity, nutrient.unit, foodQuantity);
       }
     });
   }
@@ -170,5 +164,59 @@ export default class ConversionsUtils {
    */
   public static get defaultQuantityMeasure(): string {
     return this.getUnits().nominalUnits.grams[0];
+  }
+
+  /**
+   *  Returns a "recommendation" object; it also in charge of computing
+   * a risk ratio for the given nutrient, based on its amount.
+   */
+  public static getRecommendations(nutrient: INutrient, data: any = {}): IRecommendation {
+    return {
+      daily_amount: {
+        male: data.amount_m,
+        female: data.amount_f,
+      },
+      ear: data.ear,
+      highest_rda_ai: data.highest_rda_ai,
+      ul: data.ul,
+      unit: data.unit,
+    };
+  }
+
+  /**
+   * Computes and hydrates a healthy coeff for the given nutrient.
+   * @param nutrient The nutrient class to hydrate
+   */
+  public static computeHealtyCoeff(nutrient: INutrient): void {
+    nutrient.recommendation.health_risk_ratio = nutrient.recommendation.daily_amount.male
+      ? // TODO: Shall we compute a meaning average for covering also females?
+        this.getRiskRatio(+nutrient.quantity, +nutrient.recommendation.daily_amount.male)
+      : !isNaN(nutrient.recommendation.highest_rda_ai)
+      ? this.getRiskRatio(+nutrient.quantity, +nutrient.recommendation.highest_rda_ai)
+      : 0;
+  }
+
+  /**
+   * Scales a given value within a given unit.
+   * @param singleUnitValue The single unit value
+   * @param unit  The unit of the value
+   * @param foodQuantityValue The quantity of food
+   */
+  private static scaleQuantity(singleUnitValue: number, unit: string, foodQuantityValue: number): number {
+    const valueInOneGram = singleUnitValue / this.refQuantityGr;
+    return valueInOneGram * foodQuantityValue;
+  }
+
+  /**
+   * Calculates the risk ratio.
+   * TODO: Shall we add more factors to the ratio?
+   * @param a The first factor
+   * @param b The second factor (this might be less than 0 for certain substances, where the consumption is "the less the better")
+   */
+  private static getRiskRatio(a: number, b: number): number {
+    return b < 0
+    // TODO: How to cope with negative factors where the rule for the intake is "the less the better"
+    ? b*-1
+    : a / b;
   }
 }

@@ -12,6 +12,7 @@ export interface IRecipeResult {
   totals: { [label: string]: { value: number; unit: string } };
   unknown: { [label: string]: { ingredient: IInputIngredient; parsed?: string[]; reasons?: UNKNOWN_REASONS[] } };
   matches: { [label: string]: IFood[] };
+  sum_health_ratio: number;
 }
 
 export enum LOGIC_OPERATOR {
@@ -51,11 +52,39 @@ export default class NutrifactsJs {
    * @param ingredients The list of ingredients. Supports NLP queries (recipeStr) or precise values (label & quantity).
    */
   public getNutrientsInRecipe(ingredients: IInputIngredient[]): Promise<IRecipeResult> {
+    // Merge duplicates in the given ingredients
+    const uniqueIngredients = (): IInputIngredient[] => {
+      const visitedIngredients: IInputIngredient[] = [];
+
+      _.each(ingredients, (ingredient: IInputIngredient) => {
+        // Keep the nlp strings
+        if (!ingredient.label && ingredient.recipeStr) {
+          visitedIngredients.push(ingredient);
+          return;
+        }
+
+        const visitedIndex = _.findIndex(visitedIngredients, { label: ingredient.label });
+        if (visitedIndex < 0) {
+          visitedIngredients.push(ingredient);
+        } else {
+          if (visitedIngredients[visitedIndex].quantity && ingredient.quantity) {
+            visitedIngredients[visitedIndex].quantity =
+              visitedIngredients[visitedIndex].quantity! + ingredient.quantity!;
+          }
+        }
+      });
+
+      return visitedIngredients;
+    };
+
     const output: IRecipeResult = {
       totals: {},
       unknown: {},
       matches: {},
+      sum_health_ratio: 0,
     };
+
+    ingredients = uniqueIngredients();
 
     return new Promise((resolve, reject) => {
       // Resolve the promise as soon as all the ingredients have been processed
@@ -153,6 +182,11 @@ export default class NutrifactsJs {
                   if (nutrient.unit === '%' || nutrient.quantity <= 0) {
                     return;
                   }
+
+                  ConversionsUtils.computeHealtyCoeff(nutrient);
+                  output.sum_health_ratio += nutrient.recommendation
+                    ? nutrient.recommendation.health_risk_ratio || 0
+                    : 0;
 
                   if (typeof output.totals[nutrient.name] === 'undefined') {
                     output.totals[nutrient.name] = { value: 0, unit: nutrient.unit };

@@ -4,6 +4,7 @@ import { QueryTypes, Sequelize } from 'sequelize';
 import { LANGUAGES, LOGIC_OPERATOR } from '../';
 import FuseDbDataEn from '../../db/data_EN.fuzzy.json';
 import FuseDbDataIt from '../../db/data_IT.fuzzy.json';
+import ConversionsUtils from '../helpers/conversions';
 import LanguageUtils from '../helpers/language';
 import Db from '../models/sql';
 import { IFood, IFoodSimplified, INutrient } from '../models/sql/models';
@@ -85,8 +86,33 @@ export default class DbApi {
    * TODO: Use a promise instead of a callback
    */
   public injectPropertiesInNutrient(nutrient: INutrient, cb: (err?: Error | string) => void): any {
-    this.sequelize
-      .query(
+    const promises = [
+      this.sequelize.query(
+        `SELECT ear,
+              highest_rda_ai,
+              ul,
+              unit,
+              NULL as amount_m,
+              NULL as amount_f,
+              NULL as amount_s_min,
+              NULL as amount_s_max
+        FROM rdmn_nutrients
+        WHERE nutrient_id = '${nutrient.id}'
+        UNION
+        SELECT 
+              NULL as ear,
+              NULL as highest_rda_ai,
+              NULL as ul,
+              unit,
+              amount_m,
+              amount_f,
+              amount_s_min,
+              amount_s_max
+        FROM rdmn_macronutrients
+        WHERE nutrient_id = '${nutrient.id}'`,
+        { type: QueryTypes.SELECT },
+      ),
+      this.sequelize.query(
         `SELECT  properties.name,
               properties.descr
           FROM    properties,
@@ -95,9 +121,13 @@ export default class DbApi {
           AND nutrient_property.nutrient_id = '${nutrient.id}'
           LIMIT 0,10`,
         { type: QueryTypes.SELECT },
-      )
-      .then((properties: any[]) => {
-        nutrient.properties = properties;
+      ),
+    ];
+
+    Promise.all(promises)
+      .then((results: any[]) => {
+        nutrient.recommendation = ConversionsUtils.getRecommendations(nutrient, results[0][0]);
+        nutrient.properties = results[1];
         cb();
       })
       .catch(cb);
