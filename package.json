@@ -1,6 +1,6 @@
 {
   "name": "nutrifacts",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A library to calculate nutrition facts, smartly. No third party services or remote DBs involved.",
   "main": "lib/src/index.js",
   "files": [
