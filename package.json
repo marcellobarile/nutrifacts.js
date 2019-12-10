@@ -1,6 +1,6 @@
 {
   "name": "nutrifacts",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A library to calculate nutrition facts, smartly. No third party services or remote DBs involved.",
   "main": "lib/src/index.js",
   "files": [
@@ -33,27 +33,27 @@
   "keywords": ["food","nutrition","nutrition facts","health","cooking"],
   "license": "UNLICENSED",
   "devDependencies": {
-    "@types/bluebird": "^3.5.27",
-    "@types/jest": "^24.0.18",
-    "@types/lodash": "^4.14.138",
+    "@types/bluebird": "^3.5.29",
+    "@types/jest": "^24.0.23",
+    "@types/lodash": "^4.14.149",
     "@types/node": "^12.7.5",
     "@types/pegjs": "^0.10.1",
-    "@types/validator": "^10.11.3",
+    "@types/validator": "^12.0.1",
     "copyfiles": "^2.1.1",
     "jest": "^24.9.0",
-    "prettier": "^1.18.2",
-    "ts-jest": "^24.1.0",
-    "tslint": "^5.20.0",
+    "prettier": "^1.19.1",
+    "ts-jest": "^24.2.0",
+    "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.7.3"
   },
   "dependencies": {
-    "fuse.js": "^3.4.5",
+    "fuse.js": "^3.4.6",
     "lodash": "^4.17.15",
     "pegjs": "^0.10.0",
     "reflect-metadata": "^0.1.13",
-    "sequelize": "^5.18.4",
-    "sequelize-typescript": "^1.0.0",
-    "sqlite3": "^4.1.0"
+    "sequelize": "^5.21.2",
+    "sequelize-typescript": "^1.1.0",
+    "sqlite3": "^4.1.1"
   }
 }
