@@ -215,7 +215,7 @@ export default class ConversionsUtils {
    */
   private static getRiskRatio(a: number, b: number): number {
     return b < 0
-    // TODO: How to cope with negative factors were the rule for the intake is "the less the better"
+    // TODO: How to cope with negative factors where the rule for the intake is "the less the better"
     ? b*-1
     : a / b;
   }
