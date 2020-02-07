@@ -7,3 +7,4 @@
 - How to deal with missing foods in the DB? The optimal solution would be to derive the most generic available food (e.g. "guanciale" => "pork fat meat")
 - Implement http://im2recipe.csail.mit.edu/ - paper: http://im2recipe.csail.mit.edu/im2recipe.pdf - dataset: http://im2recipe.csail.mit.edu/tpami19.pdf | http://im2recipe.csail.mit.edu/dataset/download/
   -- Alternative: https://github.com/Murgio/Food-Recipe-CNN or https://github.com/ph1ps/Food101-CoreML
+- see if https://en.m.wikibooks.org/wiki/Cookbook:Table_of_Contents might be helpful somehow
