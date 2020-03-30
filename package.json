@@ -30,7 +30,13 @@
     "url": "https://github.com/marcellobarile/nutrifacts.js/issues",
     "email": "marcello.barile@gmail.com"
   },
-  "keywords": ["food","nutrition","nutrition facts","health","cooking"],
+  "keywords": [
+    "food",
+    "nutrition",
+    "nutrition facts",
+    "health",
+    "cooking"
+  ],
   "license": "UNLICENSED",
   "devDependencies": {
     "@types/bluebird": "^3.5.29",
